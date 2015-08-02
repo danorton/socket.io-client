@@ -2,18 +2,31 @@ var expect = require('expect.js');
 var io = require('../');
 var hasCORS = require('has-cors');
 var textBlobBuilder = require('text-blob-builder');
+var cfg = require('./config');
+
 
 describe('connection', function() {
   this.timeout(70000);
 
-  it('should connect to localhost', function(done){
-    var socket = io({ forceNew: true });
-    socket.emit('hi');
-    socket.on('hi', function(data){
-      socket.disconnect();
-      done();
+  if (cfg.K.TARGET_HOST_URL === undefined) {
+    it('should connect to localhost', function(done){
+      var socket = io({ forceNew: true });
+      socket.emit('hi');
+      socket.on('hi', function(data){
+        socket.disconnect();
+        done();
+      });
     });
-  });
+  } else {
+    it('should connect to ' + cfg.K.TARGET_HOST_URL, function(done){
+      var socket = io({ forceNew: true });
+      socket.emit('hi');
+      socket.on('hi', function(data){
+        socket.disconnect();
+        done();
+      });
+    });
+  }
 
   it('should not connect when autoConnect option set to false', function() {
     var socket = io({ forceNew: true, autoConnect: false });
